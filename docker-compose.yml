@@ -58,6 +58,14 @@ services:
     networks:
       - demo-networks
 
+  dejavu:
+    image: appbaseio/dejavu:latest
+    container_name: dejavu
+    ports:
+     - "1358:1358"
+    networks:
+      - demo-networks    
+    
   grafana:
     container_name: grafana
     image: grafana/grafana-oss:8.3.1
@@ -70,6 +78,9 @@ services:
     volumes:
       - ./conf/grafana/data/plugins:/var/lib/grafana/plugins
       - ./conf/grafana/grafana.ini:/etc/grafana/grafana.ini
+    depends_on:
+      - postgres
+    restart: always
     networks:
       - demo-networks
       
