@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "3JnfrISduYPl8jn1CQaPCxRKGWY8yIVHirV8f7z6efVCo3rv9tM8kkXivAXwmZnx0qSdEVk+u8vsc6mVVrRAWA==",
+  "success": true,
+  "projectFilePath": "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj",
+  "expectedPackageFiles": [
+    "/home/felix/.nuget/packages/elasticsearch.net/7.16.0/elasticsearch.net.7.16.0.nupkg.sha512",
+    "/home/felix/.nuget/packages/microsoft.csharp/4.6.0/microsoft.csharp.4.6.0.nupkg.sha512",
+    "/home/felix/.nuget/packages/nest/7.16.0/nest.7.16.0.nupkg.sha512",
+    "/home/felix/.nuget/packages/system.buffers/4.5.1/system.buffers.4.5.1.nupkg.sha512",
+    "/home/felix/.nuget/packages/system.diagnostics.diagnosticsource/5.0.0/system.diagnostics.diagnosticsource.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
