@@ -6,6 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Elasticsearch.Net;
 using Nest.Demo.Models;
+using InfluxDB.Client;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core;
+using InfluxDB.Client.Writes;
 
 namespace Nest.Demo
 {
@@ -15,7 +19,8 @@ namespace Nest.Demo
         static void Main(string[] args)
         {
             var esClient = CreateEsClient();
-            Random rnd = new();
+            var influxClient = CreateInfuxDbClient();
+
             var sys = new SystemInfo()
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -32,8 +37,9 @@ namespace Nest.Demo
                     CommPort = 50051
                 }
             };
-
-            Task.Run(async() =>
+            
+            Random rnd = new();
+            Task.Run(async () =>
             {
                 while (true)
                 {
@@ -44,19 +50,27 @@ namespace Nest.Demo
                         // Would like to Convert it to Megabyte? divide it by 2^20
                         memory = proc.PrivateMemorySize64 / (1024 * 1024);
                     }
-
-                    var result = await BulkInsert(new List<ComputerMonitor>(){
-                    new ComputerMonitor(){
+                    var data = new ComputerMonitor()
+                    {
                         LogId = DateTime.Now.Ticks.ToString(),
                         CpuUsage = (float)Math.Round(rnd.NextDouble(), 2),
                         Memory = (float)memory,
                         Time = DateTime.Now,
                         SystemInfo = sys,
                         Plugins = plugs
-                    }}, esClient)
-                    .ConfigureAwait(false);
+                    };
+                    try
+                    {
+                        var result1 = await BulkInsert(new List<ComputerMonitor>() { data }, esClient)
+                        .ConfigureAwait(false);
 
-                    System.Console.WriteLine($"Insert: {result}");
+                        //var result2 = WriteData(new List<ComputerMonitor>() { data }, influxClient);
+                        System.Console.WriteLine($"Insert: {result1}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
                     Thread.Sleep(1000);
                 }
             });
@@ -72,7 +86,7 @@ namespace Nest.Demo
                 }
             });
 
-            Console.ReadKey();
+            Console.Read();
         }
 
         static ElasticClient CreateEsClient()
@@ -97,6 +111,29 @@ namespace Nest.Demo
 
             return client;
         }
+
+        static InfluxDBClient CreateInfuxDbClient()
+        {
+            // You can generate an API token from the "API Tokens Tab" in the UI
+            const string token = "2SqvLIzZQ_gxA4DP-uoiNfgxYCFkKxJ7JKxRfXqpOLnHhPa0fBBwpzeimw_DoSIciVwJU_uRzy0bJAMmEmo9HA==";
+
+            var client = InfluxDBClientFactory.Create("http://localhost:8086", token);
+
+            return client;
+        }
+
+        static bool WriteData(IEnumerable<ComputerMonitor> items, InfluxDBClient influxClient)
+        {
+            const string bucket = "user";
+            const string org = "myorg";
+
+            using (var writeApi = influxClient.GetWriteApi())
+            {
+                writeApi.WriteMeasurement(bucket, org, WritePrecision.Ns, items);
+            }
+            return true;
+        }
+
 
         static async Task<bool> BulkInsert(IEnumerable<ComputerMonitor> items, ElasticClient esClient)
         {
@@ -137,22 +174,23 @@ namespace Nest.Demo
                     Includes = "*"
                 },
                 Query = query,
-                Sort = (List<ISort>)new List<ISort>(){ new FieldSort(){ Field = "time", Order = SortOrder.Descending}},
+                Sort = (List<ISort>)new List<ISort>() { new FieldSort() { Field = "time", Order = SortOrder.Descending } },
                 From = 0,
                 Size = 1,
                 Scroll = "1m"
             };
 
             var searchResponse = await esClient.SearchAsync<ComputerMonitor>(s => searchRequest);
+            results.AddRange(searchResponse.Documents);
+            
+            //超過10000筆才需要用Scroll 一般用上面的就可以
+            // while (searchResponse.Documents.Any())
+            // {
+            //     results.AddRange(searchResponse.Documents);
+            //     searchResponse = await esClient.ScrollAsync<ComputerMonitor>("1m", searchResponse.ScrollId);
+            // }
 
-            //超過5000筆才需要用Scroll 一般用上面的就可以
-            while (searchResponse.Documents.Any())
-            {
-                results.AddRange(searchResponse.Documents);
-                searchResponse = await esClient.ScrollAsync<ComputerMonitor>("1m", searchResponse.ScrollId);
-            }
-
-            await esClient.ClearScrollAsync(new ClearScrollRequest(searchResponse.ScrollId));
+            // await esClient.ClearScrollAsync(new ClearScrollRequest(searchResponse.ScrollId));
 
             return results;
         }

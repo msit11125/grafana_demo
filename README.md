@@ -1,5 +1,6 @@
-#### 用 Grafana 打造監控系統
+### 用 Grafana 打造監控系統
 
+#### 基本設定及啟動
 - grafana.ini
   ```
   [database]
@@ -25,6 +26,8 @@
   $ docker-compose down --volumes
   ```
 
-
-
+#### Grafana Plugin 範例程式
+```bash
+$ cd grafana-plugins/felix-my-grafana-plugin
+```
 [Grafana Panel Plugin Template](https://github.com/grafana/grafana-starter-panel)
