@@ -5,6 +5,23 @@ using System.Threading.Tasks;
 
 namespace Nest.Demo.Models
 {
+    [InfluxDB.Client.Core.Measurement("computer_monitor")]
+    public class ComputerMonitorInfux
+    {
+        [InfluxDB.Client.Core.Column("logId")]
+        public string LogId { get; set; }
+
+        [InfluxDB.Client.Core.Column("cpuUsage")]
+        public float CpuUsage { get; set; }
+
+        [InfluxDB.Client.Core.Column("memory")]
+        public float Memory { get; set; }
+
+        [InfluxDB.Client.Core.Column("time", IsTimestamp = true)]
+        public DateTime Time { get; set; }
+
+    }
+
     public class ComputerMonitor
     {
         public string LogId { get; set; }
@@ -21,13 +38,15 @@ namespace Nest.Demo.Models
         }
     }
 
-    public class SystemInfo{
+    public class SystemInfo
+    {
         public string UUID { get; set; }
         public string System { get; set; }
         public string Version { get; set; }
     }
 
-    public class Plugin{
+    public class Plugin
+    {
         public string Type { get; set; }
         public int CommPort { get; set; }
     }

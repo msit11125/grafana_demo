@@ -37,7 +37,7 @@ namespace Nest.Demo
                     CommPort = 50051
                 }
             };
-            
+
             Random rnd = new();
             Task.Run(async () =>
             {
@@ -53,7 +53,7 @@ namespace Nest.Demo
                     var data = new ComputerMonitor()
                     {
                         LogId = DateTime.Now.Ticks.ToString(),
-                        CpuUsage = (float)Math.Round(rnd.NextDouble(), 2),
+                        CpuUsage = (float)Math.Round(rnd.NextDouble() * 0.9 + 0.0, 2),
                         Memory = (float)memory,
                         Time = DateTime.Now,
                         SystemInfo = sys,
@@ -64,8 +64,8 @@ namespace Nest.Demo
                         var result1 = await BulkInsert(new List<ComputerMonitor>() { data }, esClient)
                         .ConfigureAwait(false);
 
-                        //var result2 = WriteData(new List<ComputerMonitor>() { data }, influxClient);
-                        System.Console.WriteLine($"Insert: {result1}");
+                        var result2 = WriteData(new List<ComputerMonitor>() { data }, influxClient);
+                        System.Console.WriteLine($"Insert: {result1 && result2}");
                     }
                     catch (Exception ex)
                     {
@@ -115,8 +115,7 @@ namespace Nest.Demo
         static InfluxDBClient CreateInfuxDbClient()
         {
             // You can generate an API token from the "API Tokens Tab" in the UI
-            const string token = "2SqvLIzZQ_gxA4DP-uoiNfgxYCFkKxJ7JKxRfXqpOLnHhPa0fBBwpzeimw_DoSIciVwJU_uRzy0bJAMmEmo9HA==";
-
+            const string token = "dsb3azOY0VIRiPGxl4TuoL9GfJXuKDJXpISFt6r_93P_9UAJhbcG3DN2_07j6ybmptM47ivwSMOgkQBGKRYkRA==";
             var client = InfluxDBClientFactory.Create("http://localhost:8086", token);
 
             return client;
@@ -124,12 +123,20 @@ namespace Nest.Demo
 
         static bool WriteData(IEnumerable<ComputerMonitor> items, InfluxDBClient influxClient)
         {
-            const string bucket = "user";
+            const string bucket = "monitor";
             const string org = "myorg";
+
+            var items_data = items.Select(s => new ComputerMonitorInfux
+            {
+                CpuUsage = s.CpuUsage,
+                Memory = s.Memory,
+                LogId = s.LogId,
+                Time = s.Time.ToUniversalTime(),
+            }).ToList();
 
             using (var writeApi = influxClient.GetWriteApi())
             {
-                writeApi.WriteMeasurement(bucket, org, WritePrecision.Ns, items);
+                writeApi.WriteMeasurements(bucket, org, WritePrecision.Ns, items_data);
             }
             return true;
         }
@@ -182,7 +189,7 @@ namespace Nest.Demo
 
             var searchResponse = await esClient.SearchAsync<ComputerMonitor>(s => searchRequest);
             results.AddRange(searchResponse.Documents);
-            
+
             //超過10000筆才需要用Scroll 一般用上面的就可以
             // while (searchResponse.Documents.Any())
             // {
