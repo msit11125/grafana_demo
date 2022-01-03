@@ -7,4 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = Nest.Demo
-build_property.ProjectDir = /home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/
+build_property.ProjectDir = /home/felix/projects/demo/grafana_demo/Nest.Demo/

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj": {}
+    "/home/felix/projects/demo/grafana_demo/Nest.Demo/Nest.Demo.csproj": {}
   },
   "projects": {
-    "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj": {
+    "/home/felix/projects/demo/grafana_demo/Nest.Demo/Nest.Demo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj",
+        "projectUniqueName": "/home/felix/projects/demo/grafana_demo/Nest.Demo/Nest.Demo.csproj",
         "projectName": "Nest.Demo",
-        "projectPath": "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj",
+        "projectPath": "/home/felix/projects/demo/grafana_demo/Nest.Demo/Nest.Demo.csproj",
         "packagesPath": "/home/felix/.nuget/packages/",
-        "outputPath": "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/obj/",
+        "outputPath": "/home/felix/projects/demo/grafana_demo/Nest.Demo/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/felix/.nuget/NuGet/NuGet.Config"
@@ -20,8 +20,7 @@
           "net5.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.devexpress.com/fbBhUXqbOjbMQ9OiZzkhTOUaHabt1yJVXtG4nFdmJ8wCCSBAKq/api": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
@@ -63,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.404/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.400/RuntimeIdentifierGraph.json"
         }
       }
     }

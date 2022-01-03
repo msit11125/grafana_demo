@@ -64,8 +64,8 @@ namespace Nest.Demo
                         var result1 = await BulkInsert(new List<ComputerMonitor>() { data }, esClient)
                         .ConfigureAwait(false);
 
-                        var result2 = WriteData(new List<ComputerMonitor>() { data }, influxClient);
-                        System.Console.WriteLine($"Insert: {result1 && result2}");
+                        // var result2 = WriteData(new List<ComputerMonitor>() { data }, influxClient);
+                        // System.Console.WriteLine($"Insert: {result1 && result2}");
                     }
                     catch (Exception ex)
                     {
@@ -80,9 +80,10 @@ namespace Nest.Demo
             {
                 while (true)
                 {
-                    var result = await GetAsync(esClient);
-                    System.Console.WriteLine("LogId: " + result.FirstOrDefault()?.LogId + ", Time: " + result.FirstOrDefault()?.Time);
-                    Thread.Sleep(1000);
+                    await DeleteByTimeAgo(esClient);
+                    // var result = await GetAsync(esClient);
+                    // System.Console.WriteLine("LogId: " + result.FirstOrDefault()?.LogId + ", Time: " + result.FirstOrDefault()?.Time);
+                    Thread.Sleep(5000);
                 }
             });
 
@@ -157,6 +158,26 @@ namespace Nest.Demo
             }
 
             var response = await esClient.BulkAsync(bulkDescriptor);
+
+            if (response.IsValid.Equals(false))
+            {
+                throw response.OriginalException;
+            }
+
+            return response.IsValid;
+        }
+
+        static async Task<bool> DeleteByTimeAgo(ElasticClient esClient)
+        {
+            var ago = DateTime.Now.AddSeconds(-5);
+            var response = esClient.DeleteByQuery<ComputerMonitor>(q => q
+                .Query(rq => rq
+                    .DateRange(m => m
+                    .Field(f => f.Time)
+                    .LessThanOrEquals(ago)) 
+                )
+                .Index(computer_monitor_index)
+            );
 
             if (response.IsValid.Equals(false))
             {

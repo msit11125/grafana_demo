@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Gr763vSDSpYs9tD4rPbG30WaGROcWS5jwj+KrdcqDdJ19YDTIipljChW4+DxfHp1V5SRC/BwJqUIUq/HAOSrMQ==",
+  "dgSpecHash": "Ti+cwqDsp9qgn6wcVfaE3Otet65CvKrDtbZnG6ziPdXksbEmfDnr042hijjnnT4hfw3x9vyU8MyVaTgMK7gTPA==",
   "success": true,
-  "projectFilePath": "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj",
+  "projectFilePath": "/home/felix/projects/demo/grafana_demo/Nest.Demo/Nest.Demo.csproj",
   "expectedPackageFiles": [
     "/home/felix/.nuget/packages/csvhelper/27.1.0/csvhelper.27.1.0.nupkg.sha512",
     "/home/felix/.nuget/packages/elasticsearch.net/7.16.0/elasticsearch.net.7.16.0.nupkg.sha512",
