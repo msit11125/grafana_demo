@@ -24,9 +24,12 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
   }
 
   return (
-    <svg height="100" width="100">
-      <circle cx="50" cy="50" r="40" stroke="black" strokeWidth="3" fill={color} />
-    </svg>
+    <div>
+      <h1>Hello Circle!!</h1>
+      <svg height="100" width="100">
+        <circle cx="50" cy="50" r="40" stroke="black" strokeWidth="3" fill={color} />
+      </svg>
+    </div>
 
     // <div
     //   className={cx(

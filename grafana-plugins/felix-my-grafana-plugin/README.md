@@ -42,3 +42,13 @@ For more information about panels, refer to the documentation on [Panels](https:
 - [Grafana documentation](https://grafana.com/docs/)
 - [Grafana Tutorials](https://grafana.com/tutorials/) - Grafana Tutorials are step-by-step guides that help you make the most of Grafana
 - [Grafana UI Library](https://developers.grafana.com/ui) - UI components to help you build interfaces using Grafana Design System
+
+
+##### Sign in
+Sign a private plugin
+[Links](https://grafana.com/docs/grafana/latest/developers/plugins/sign-a-plugin/)
+
+```bash
+export GRAFANA_API_KEY=<YOUR_API_KEY>
+npx @grafana/toolkit plugin:sign --rootUrls https://example.com/grafana
+```

@@ -80,7 +80,7 @@ namespace Nest.Demo
             {
                 while (true)
                 {
-                    await DeleteByTimeAgo(esClient);
+                    //await DeleteByTimeAgo(esClient);
                     // var result = await GetAsync(esClient);
                     // System.Console.WriteLine("LogId: " + result.FirstOrDefault()?.LogId + ", Time: " + result.FirstOrDefault()?.Time);
                     Thread.Sleep(5000);

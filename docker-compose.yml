@@ -109,8 +109,9 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,marcusolsson-json-datasource
     volumes:
-      - ./conf/grafana/data/plugins:/var/lib/grafana/plugins
+      - ./grafana-plugins:/var/lib/grafana/plugins
       - ./conf/grafana/grafana.ini:/etc/grafana/grafana.ini
     #restart: unless-stopped
     depends_on:
