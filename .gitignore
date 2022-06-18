@@ -125,5 +125,11 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
+# C#
+bin/
+obj/
+Debug/
+Release/
+
 # Visual Studio 2015
 .vs/

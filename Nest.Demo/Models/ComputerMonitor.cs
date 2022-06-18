@@ -24,6 +24,7 @@ namespace Nest.Demo.Models
 
     public class ComputerMonitor
     {
+        [Keyword(Name = "logId")]
         public string LogId { get; set; }
         public float CpuUsage { get; set; }
         public float Memory { get; set; }

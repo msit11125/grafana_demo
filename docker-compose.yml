@@ -1,5 +1,23 @@
 version: '3'
 
+networks:
+  monitor:
+    driver: bridge
+
+volumes:
+  es_data:
+    driver: local
+  influx_data:
+    driver: local
+  pgadmin_root_prefs:
+    driver: local
+  postgresql_data:
+    driver: local
+  postgresql_bin:
+    driver: local
+  prometheus_data: {}
+  grafana_data: {}
+
 services:
   postgres:
     container_name: postgres
@@ -21,20 +39,20 @@ services:
       interval: 10s
       retries: 10
       
-  # pgadmin:
-  #   container_name: pgadmin
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-  #     PGADMIN_DEFAULT_PASSWORD: postgres
-  #     PGADMIN_LISTEN_PORT: 5050
-  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
-  #   volumes:
-  #     - pgadmin_root_prefs:/root/.pgadmin
-  #   ports:
-  #     - 5050:5050
-  #   networks:
-  #     - monitor
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_root_prefs:/root/.pgadmin
+    ports:
+      - 5050:5050
+    networks:
+      - monitor
   
   influxdb:
     image: influxdb:latest
@@ -90,28 +108,56 @@ services:
     depends_on:
       - elasticsearch
     ports:
-      - "5601:5601"
+      - "5601:5601" 
 
-  # dejavu:
-  #   image: appbaseio/dejavu:latest
-  #   container_name: dejavu
-  #   ports:
-  #    - "1358:1358"
-  #   networks:
-  #     - monitor    
-    
+  prometheus:
+    image: prom/prometheus:v2.36.1
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    ports:
+      - 9090:9090
+    networks:
+      - monitor
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.44.0
+    container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    ports:
+      - 8080:8080
+    networks:
+      - monitor
+
   grafana:
     container_name: grafana
     image: grafana/grafana-oss:8.3.1
     ports:
       - 3000:3000
-    user: '0'
+    user: "${UID}:${GID}"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_INSTALL_PLUGINS=grafana-clock-panel,marcusolsson-json-datasource
     volumes:
       - ./grafana-plugins:/var/lib/grafana/plugins
+      - ./conf/grafana/provisioning:/etc/grafana/provisioning
       - ./conf/grafana/grafana.ini:/etc/grafana/grafana.ini
     #restart: unless-stopped
     depends_on:
@@ -119,19 +165,3 @@ services:
         condition: service_healthy
     networks:
       - monitor
-
-networks:
-  monitor:
-    driver: bridge
-
-volumes:
-  es_data:
-    driver: local
-  influx_data:
-    driver: local
-  pgadmin_root_prefs:
-    driver: local
-  postgresql_data:
-    driver: local
-  postgresql_bin:
-    driver: local

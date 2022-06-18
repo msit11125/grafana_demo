@@ -11,7 +11,7 @@
   password = postgres
 
   [plugins]
-  allow_loading_unsigned_plugins =felix-my-grafana-plugin
+  allow_loading_unsigned_plugins =hello-my-grafana-plugin
 
   [security]
   allow_embedding = true
@@ -28,6 +28,21 @@
 
 #### Grafana Plugin 範例程式
 ```bash
-$ cd grafana-plugins/felix-my-grafana-plugin
+$ cd grafana-plugins/hello-my-grafana-plugin
 ```
 [Grafana Panel Plugin Template](https://github.com/grafana/grafana-starter-panel)
+
+
+### Docker
+
+```bash
+# stop all
+docker stop $(docker ps -a -q)
+
+# remove all container
+docker rm -vf $(docker ps -a -q)
+```
+
+### Reference
+https://github.com/stefanprodan/dockprom
+https://www.youtube.com/watch?v=SVIGKcMJ31E&ab_channel=Thetips4you

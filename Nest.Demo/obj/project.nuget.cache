@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Gr763vSDSpYs9tD4rPbG30WaGROcWS5jwj+KrdcqDdJ19YDTIipljChW4+DxfHp1V5SRC/BwJqUIUq/HAOSrMQ==",
+  "dgSpecHash": "j57uVogS28BD6kmYJAims//FMgI9D9WaZwfkp9h9eue12KsnkRdM0XAdbnfnYl+S0vdq9E7ksXfq1ix91r3nWg==",
   "success": true,
   "projectFilePath": "/home/felix/programing/code/dockertest/grafana_demo/Nest.Demo/Nest.Demo.csproj",
   "expectedPackageFiles": [

@@ -1,8 +1,8 @@
 ## Clock Panel Plugin for Grafana
 
-The Clock Panel can show the current time or a countdown and updates every second.
+The Clock Panel can show the current time or a countdown/countup and updates every second.
 
-Show the time in another office or show a countdown to an important event.
+Show the time in another office or show a countdown/countup to an important event.
 
 ### Plugin options
 
@@ -10,7 +10,9 @@ Show the time in another office or show a countdown to an important event.
 
 - **Mode**:
 
-  Default is time. If countdown is chosen then set the Countdown Deadline to start the countdown.
+  Default is time.
+  If countdown is chosen then set the Countdown Deadline to start the countdown.
+  If countup is chosen then set the Countup Startline to start the countup.
 
 - **12 or 24 hour**:
 
@@ -27,10 +29,20 @@ Show the time in another office or show a countdown to an important event.
 - **Countdown Deadline**:
 
   Used in conjunction with the mode being set to countdown. Choose a date and time to count down to.
+  
+  This field also supports dashboard (constant) variables (e.g. ``${countdown_target}``) to dynamically set the countdown deadline for the Dashboard.
 
 - **Countdown End Text**:
 
   The text to show when the countdown ends. E.g. LIFTOFF
+
+- **Countup Startline**:
+
+  Used in conjunction with the mode being set to countup. Choose a date and time to count up from.
+
+- **Countup End Text**:
+
+  The text to show before the countup starts. E.g. LIFTOFF
 
 - **Date/Time formatting options**:
 
@@ -59,11 +71,11 @@ Using Docker:
 1. make sure you have [yarn]( https://yarnpkg.com/) installed
 1. install project dependencies: `yarn install --pure-lockfile`
 1. Start the "watch" task: `yarn watch`
-1. Run a local Grafana instance with the development version of the plugin: `docker run -p 3000:3000 -d --name grafana-plugin-dev --volume $(pwd)/dist:/var/lib/grafana/plugins/clock-panel grafana/grafana`
-1. Check the logs to see that Grafana has started up: `docker logs -f grafana-plugin-dev`
-1. Open Grafana at http://localhost:3000/
-1. Log in with username "admin" and password "admin"
-1. Create new dashboard and add the plugin
+1. Run a local Grafana instance with the development version of the plugin: `docker run -p 3000:3000 -d --name grafana-plugin-dev --env GF_AUTH_ANONYMOUS_ORG_ROLE="Admin" --env GF_AUTH_ANONYMOUS_ENABLED="true" --env GF_AUTH_BASIC_ENABLED="false" --env GF_DEFAULT_APP_MODE="development" --volume $(pwd)/dist:/var/lib/grafana/plugins/clock-panel grafana/grafana`
+2. Check the logs to see that Grafana has started up: `docker logs -f grafana-plugin-dev`
+3. Open Grafana at http://localhost:3000/
+4. Log in with username "admin" and password "admin"
+5. Create new dashboard and add the plugin
 
 To build a production build with minification: `yarn build`
 
