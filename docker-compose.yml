@@ -9,12 +9,6 @@ volumes:
     driver: local
   influx_data:
     driver: local
-  pgadmin_root_prefs:
-    driver: local
-  postgresql_data:
-    driver: local
-  postgresql_bin:
-    driver: local
   prometheus_data: {}
   grafana_data: {}
 
@@ -23,11 +17,10 @@ services:
     container_name: postgres
     image: postgres:13
     environment:
+      POSTGRES_DB: test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      -  postgresql_bin:/usr/lib/postgresql
-      -  postgresql_data:/var/lib/postgresql/data
       -  ./conf/postgres/postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     ports:
       - 5432:5432
@@ -47,28 +40,26 @@ services:
       PGADMIN_DEFAULT_PASSWORD: postgres
       PGADMIN_LISTEN_PORT: 5050
       PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin_root_prefs:/root/.pgadmin
     ports:
       - 5050:5050
     networks:
       - monitor
   
-  influxdb:
-    image: influxdb:latest
-    container_name: influxdb
-    ports:
-      - "8086:8086"
-    environment:
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=admin1234
-      - DOCKER_INFLUXDB_INIT_ORG=myorg
-      - DOCKER_INFLUXDB_INIT_BUCKET=user
-    volumes:
-      - influx_data:/var/lib/influxdb
-    networks:
-      - monitor
+  # influxdb:
+  #   image: influxdb:latest
+  #   container_name: influxdb
+  #   ports:
+  #     - "8086:8086"
+  #   environment:
+  #     - DOCKER_INFLUXDB_INIT_MODE=setup
+  #     - DOCKER_INFLUXDB_INIT_USERNAME=admin
+  #     - DOCKER_INFLUXDB_INIT_PASSWORD=admin1234
+  #     - DOCKER_INFLUXDB_INIT_ORG=myorg
+  #     - DOCKER_INFLUXDB_INIT_BUCKET=user
+  #   volumes:
+  #     - influx_data:/var/lib/influxdb
+  #   networks:
+  #     - monitor
 
   elasticsearch:
     image: elasticsearch:7.10.1
@@ -147,7 +138,7 @@ services:
 
   grafana:
     container_name: grafana
-    image: grafana/grafana-oss:8.3.1
+    image: grafana/grafana-oss:latest
     ports:
       - 3000:3000
     user: "${UID}:${GID}"
